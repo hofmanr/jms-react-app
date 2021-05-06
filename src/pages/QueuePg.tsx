@@ -6,7 +6,7 @@ import Info from '../components/Info';
 import { Queue, Record } from '../common/types';
 import { fetchQueues, fetchRecords } from '../services/dbServices';
 import SelectQueue from '../components/SelectQueue';
-import QueueContent from '../components/QueueContent';
+import QueueContent from '../components/content/QueueContent';
 
 function QueuePg() {
     const classes: ClassNameMap = useStyles();

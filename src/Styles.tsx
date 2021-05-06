@@ -3,6 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
       flexGrow: 1,
+      width: '100%',
     },
     menuIcon: {
       marginRight: theme.spacing(2),
@@ -24,9 +25,24 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     selectEmpty: {
       marginTop: theme.spacing(2),
     },
-    table: {
-      minWidth: 650,
+    paper: {
+      width: '100%',
+      marginBottom: theme.spacing(2),
     },
-  }));
+    table: {
+      minWidth: 750,
+    },
+    visuallyHidden: {
+      border: 0,
+      clip: 'rect(0 0 0 0)',
+      height: 1,
+      margin: -1,
+      overflow: 'hidden',
+      padding: 0,
+      position: 'absolute',
+      top: 20,
+      width: 1,
+    },
+}));
 
-  export default useStyles;
+export default useStyles;
