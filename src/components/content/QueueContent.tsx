@@ -10,6 +10,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DescriptionIcon from '@material-ui/icons/Description';
+import AlertDialog from '../../components/AlertDialog';
 
 import useStyles from '../../Styles';
 import { Record } from '../../common/types';
@@ -20,10 +21,14 @@ import EnhancedTableHead from './EnhancedTableHead';
 
 interface QueueContentProps {
     records: Record[];
+    onAddRecord: () => void;
+    onDeleteRecords: (ids: number[]) => void;
 } 
 
-export default function QueueContent({ records }: QueueContentProps) {
+export default function QueueContent({ records, onAddRecord, onDeleteRecords }: QueueContentProps) {
   const classes = useStyles();
+
+  const [dialogOpen, setDialogOpen] = React.useState(false);
   const [order, setOrder] = React.useState<Order>('desc');
   const [orderBy, setOrderBy] = React.useState<keyof Record>('timestamp');
   const [selected, setSelected] = React.useState<number[]>([]);
@@ -78,10 +83,17 @@ export default function QueueContent({ records }: QueueContentProps) {
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, records.length - page * rowsPerPage);
 
+  const handleDelete = () => setDialogOpen(true); // show dialogbox
+  const deleteRecords = () => onDeleteRecords(selected); // Action when pressed OK
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          onAddRecord={onAddRecord}
+          onDelete={handleDelete}
+        />
         <TableContainer>
           <Table
             className={classes.table}
@@ -108,25 +120,26 @@ export default function QueueContent({ records }: QueueContentProps) {
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, record.id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
                       selected={isItemSelected}
                     >
-                      <TableCell padding="checkbox">
+                      <TableCell padding="checkbox" onClick={(event) => handleClick(event, record.id)}>
                         <Checkbox
                           checked={isItemSelected}
                           inputProps={{ 'aria-labelledby': labelId }}
                         />
                       </TableCell>
-                      <TableCell component="th" id={labelId} scope="row" padding="none">
+                      <TableCell component="th" id={labelId} scope="row" padding="none" onClick={(event) => handleClick(event, record.id)}>
                         {record.messageID}
                       </TableCell>
-                      <TableCell padding="none">{record.timestamp}</TableCell>
+                      <TableCell padding="none" onClick={(event) => handleClick(event, record.id)}>
+                        {record.timestamp}
+                        </TableCell>
                       <TableCell>
                         <Tooltip title="Payload">
-                          <IconButton size="small" aria-label="payload">
+                          <IconButton size="small" aria-label="payload" onClick={() => { console.log("Show payload")}}>
                             <DescriptionIcon />
                           </IconButton>
                         </Tooltip>
@@ -152,6 +165,13 @@ export default function QueueContent({ records }: QueueContentProps) {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
+      <AlertDialog 
+        title="Delete selected record(s)?" 
+        message="If so, there are definitly gone." 
+        open={dialogOpen}
+        setOpen={setDialogOpen}
+        action={deleteRecords}
+      />
     </div>
   );
 }

@@ -13,32 +13,41 @@ function QueuePg() {
     // State
     const [queues, setQueues] = React.useState<Queue[]>([]);
     const [records, setRecords] = React.useState<Record[]>([]);
+    const [queue, setQueue] = React.useState<Queue>(); // current selected queue
     // run when first load the component in the browser
     useEffect(() => {
         console.log('Fetch queues');
         fetchQueues().then(qs => setQueues(qs));
     }, []); // run it once
 
-    const setSelectedQueue = (queue: Queue) => {
-        console.log('Queue Page Set Queue');
-        if (queue) {
-            fetchRecords(queue).then(rs => setRecords(rs));
+    const onSelectQueue = (seletedQueue: Queue) => {
+        setQueue(seletedQueue);
+        if (seletedQueue) {
+            fetchRecords(seletedQueue).then(rs => setRecords(rs));
         } else {
             setRecords([]);
         }
     };
+
+    const handleAddRecord = () => {
+        console.log('post new record to queue', queue);
+    };
+
+    const handleDeleteRecords = (ids: number[]) => {
+        console.log(`delete records from queue ${queue?.name}`, ids);
+    }
 
     return (
         <main>
             <div className={classes.container}>
                 <Container maxWidth="sm">
                     <Info title="Queue Details" message="Show, add and delete messages from queues." />
-                    <SelectQueue queues={queues} selectedQueue={setSelectedQueue} />
+                    <SelectQueue queues={queues} onSelectQueue={onSelectQueue} />
                 </Container>
             </div>
             <div className={classes.container}>
                 <Container maxWidth="md">
-                    <QueueContent records={records} />
+                    <QueueContent records={records} onAddRecord={handleAddRecord} onDeleteRecords={handleDeleteRecords} />
                 </Container>
             </div>
         </main>

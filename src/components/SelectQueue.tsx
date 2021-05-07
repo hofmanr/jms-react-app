@@ -10,20 +10,19 @@ import { Queue } from '../common/types';
 
 interface SelectQueueProps {
     queues: Queue[];
-    selectedQueue: (queue: Queue) => void;
+    onSelectQueue: (queue: Queue) => void;
 }
 
-function SelectQueue({ queues, selectedQueue }: SelectQueueProps) {
+function SelectQueue({ queues, onSelectQueue }: SelectQueueProps) {
     const classes = useStyles();
     const [queue, setQueue] = React.useState<string>('');
 
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        let value: string = event.target.value as string;
-        let key: number = +value;
+        let val: string = event.target.value as string;
+        let key: number = +val;
         let que: Queue | undefined = queues.find(q => q.id === key);
-        setQueue(value);
-        console.log('Queue Selected');
-        selectedQueue(que!);
+        setQueue(val);
+        onSelectQueue(que!);
     };
 
     console.log(queues);
@@ -50,7 +49,7 @@ function SelectQueue({ queues, selectedQueue }: SelectQueueProps) {
                     </FormControl>
                 </Grid>
                 <Grid item>
-                    <Button className={classes.button} variant="outlined">
+                    <Button className={classes.button} style={{marginTop: '15px'}} variant="outlined">
                         Refresh
                     </Button>
                 </Grid>

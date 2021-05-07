@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
+import PostAddIcon from '@material-ui/icons/PostAdd';
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,11 +32,13 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  onAddRecord: () => void;
+  onDelete: () => void;
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { numSelected } = props;
+  const { numSelected, onAddRecord, onDelete } = props;
 
   return (
     <Toolbar variant="dense"
@@ -52,8 +55,13 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           &nbsp;
         </Typography>
       )}
+        <Tooltip title="Add">
+          <IconButton aria-label="add" onClick={onAddRecord}>
+            <PostAddIcon />
+          </IconButton>
+        </Tooltip>
         <Tooltip title="Delete">
-          <IconButton aria-label="delete" disabled={numSelected <= 0}>
+          <IconButton aria-label="delete" disabled={numSelected <= 0}  onClick={onDelete}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
