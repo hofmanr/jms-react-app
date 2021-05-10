@@ -7,6 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import PostAddIcon from '@material-ui/icons/PostAdd';
+import SyncIcon from '@material-ui/icons/Sync';
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,6 +56,11 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           &nbsp;
         </Typography>
       )}
+        <Tooltip title="Refresh">
+          <IconButton aria-label="refresh" onClick={() => {console.log("refresh")}}>
+            <SyncIcon />
+          </IconButton>
+        </Tooltip>
         <Tooltip title="Add">
           <IconButton aria-label="add" onClick={onAddRecord}>
             <PostAddIcon />

@@ -43,6 +43,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       top: 20,
       width: 1,
     },
+    textarea: {
+      backgroundColor: theme.palette.background.paper,
+      width: '500px'
+    },   
 }));
 
 export default useStyles;

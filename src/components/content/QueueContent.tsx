@@ -9,14 +9,16 @@ import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import DescriptionIcon from '@material-ui/icons/Description';
+import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import AlertDialog from '../../components/AlertDialog';
+import PayloadDialog from '../../components/PayloadDialog';
 
 import useStyles from '../../Styles';
-import { Record } from '../../common/types';
+import { Payload, Record } from '../../common/types';
 import { Order, getComparator, stableSort } from './tableUtils';
 import EnhancedTableToolbar from './EnhancedTableToolbar';
 import EnhancedTableHead from './EnhancedTableHead';
+import { fetchPayload} from '../../services/dbServices';
 
 
 interface QueueContentProps {
@@ -28,12 +30,14 @@ interface QueueContentProps {
 export default function QueueContent({ records, onAddRecord, onDeleteRecords }: QueueContentProps) {
   const classes = useStyles();
 
-  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [alertDialogOpen, setAlertDialogOpen] = React.useState(false);
+  const [payloadDialogOpen, setPayloadDialogOpen] = React.useState(false);
   const [order, setOrder] = React.useState<Order>('desc');
   const [orderBy, setOrderBy] = React.useState<keyof Record>('timestamp');
   const [selected, setSelected] = React.useState<number[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [payload, setPayload] = React.useState<Payload>();
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Record) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -83,8 +87,16 @@ export default function QueueContent({ records, onAddRecord, onDeleteRecords }: 
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, records.length - page * rowsPerPage);
 
-  const handleDelete = () => setDialogOpen(true); // show dialogbox
+  const handleDelete = () => setAlertDialogOpen(true); // show dialogbox
   const deleteRecords = () => onDeleteRecords(selected); // Action when pressed OK
+
+  const showPayload = (recID : number) => {
+    fetchPayload(recID).then(pl => {
+      console.log(pl.payload);
+      setPayload(pl);
+      setPayloadDialogOpen(true);
+    });
+  }
 
   return (
     <div className={classes.root}>
@@ -119,6 +131,7 @@ export default function QueueContent({ records, onAddRecord, onDeleteRecords }: 
 
                   return (
                     <TableRow
+                      key={record.id}
                       hover
                       role="checkbox"
                       aria-checked={isItemSelected}
@@ -139,8 +152,8 @@ export default function QueueContent({ records, onAddRecord, onDeleteRecords }: 
                         </TableCell>
                       <TableCell>
                         <Tooltip title="Payload">
-                          <IconButton size="small" aria-label="payload" onClick={() => { console.log("Show payload")}}>
-                            <DescriptionIcon />
+                          <IconButton size="small" aria-label="payload" onClick={() => { showPayload(record.id)}}>
+                            <DescriptionOutlinedIcon />
                           </IconButton>
                         </Tooltip>
                       </TableCell>
@@ -167,11 +180,17 @@ export default function QueueContent({ records, onAddRecord, onDeleteRecords }: 
       </Paper>
       <AlertDialog 
         title="Delete selected record(s)?" 
-        message="If so, there are definitly gone." 
-        open={dialogOpen}
-        setOpen={setDialogOpen}
+        message="You cannot undo this operation." 
+        open={alertDialogOpen}
+        setOpen={setAlertDialogOpen}
         action={deleteRecords}
       />
+       <PayloadDialog 
+        title="Payload" 
+        payload={payload?.payload}
+        open={payloadDialogOpen}
+        setOpen={setPayloadDialogOpen}
+      />     
     </div>
   );
 }
