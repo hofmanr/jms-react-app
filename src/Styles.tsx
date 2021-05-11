@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     textarea: {
       backgroundColor: theme.palette.background.paper,
-      width: '500px'
+      width: '600px'
     },   
 }));
 

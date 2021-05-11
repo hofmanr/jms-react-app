@@ -41,10 +41,10 @@ export default function AlertDialog({ title, message, open, setOpen, action }: A
             <DialogActions>
                 <Button onClick={handleClose} color="primary">
                     Cancel
-                    </Button>
+                </Button>
                 <Button onClick={handleOK} color="primary" autoFocus>
                     OK
-                    </Button>
+                </Button>
             </DialogActions>
         </Dialog>
     );

@@ -13,15 +13,32 @@ interface PayloadDialogProps {
     title: string;
     payload?: string;
     open: boolean;
+    editMode: boolean;
     setOpen: (state: boolean) => void;
+    action: (payload: string) => void;
 }
 
-export default function PayloadDialog({ title, payload, open, setOpen }: PayloadDialogProps) {
+export default function PayloadDialog({ title, payload, open, editMode, setOpen, action }: PayloadDialogProps) {
     const classes: ClassNameMap = useStyles();
+    const [content, setContent] = React.useState<string>('');
 
     const handleClose = () => {
+        setContent('');
         setOpen(false);
     };
+    const handleOK = () => {
+        setOpen(false);
+        if (action) {
+            action(content!); // execute action when OK
+            setContent('');
+        }
+    };
+
+    const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+        let val: string = event.target.value as string;
+        setContent(val);
+    };
+
 
     const descriptionElementRef = React.useRef<HTMLElement>(null);
     React.useEffect(() => {
@@ -51,22 +68,45 @@ export default function PayloadDialog({ title, payload, open, setOpen }: Payload
                     ref={descriptionElementRef}
                     tabIndex={-1}
                 >
-                    <TextareaAutosize 
-                        aria-label="minimum height" 
-                        rowsMin={15}
-                        disabled={true}
-                        // rowsMax={15}
-                        placeholder="Minimum 3 rows" 
-                        className={classes.textarea}
-                        defaultValue={payload + "\n"}
-                    />
+                    {editMode ? (
+                        <TextareaAutosize 
+                            aria-label="textarea edit mode>" 
+                            rowsMin={20}
+                            rowsMax={20}
+                            placeholder="Add new payload" 
+                            className={classes.textarea}
+                            value={content}
+                            onChange={handleChange}
+                        />
+                    ) : (
+                        <TextareaAutosize 
+                            aria-label="textarea readonly" 
+                            rowsMin={20}
+                            disabled
+                            rowsMax={20}
+                            placeholder="No payload" 
+                            className={classes.textarea}
+                            defaultValue={payload + "\n"}
+                        />
+                    )}
                 </DialogContentText>
             </DialogContent>
-            <DialogActions>
-                <Button onClick={handleClose} color="primary">
-                    Close
-              </Button>
-            </DialogActions>
+            {editMode ? (
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleOK} color="primary" autoFocus>
+                        OK
+                    </Button>
+                </DialogActions>
+            ) : (
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Close
+                    </Button>
+                </DialogActions>
+            )}
         </Dialog>
     );
 }

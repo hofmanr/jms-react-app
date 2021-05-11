@@ -14,7 +14,7 @@ import AlertDialog from '../../components/AlertDialog';
 import PayloadDialog from '../../components/PayloadDialog';
 
 import useStyles from '../../Styles';
-import { Payload, Record } from '../../common/types';
+import { Queue, Record, Payload } from '../../common/types';
 import { Order, getComparator, stableSort } from './tableUtils';
 import EnhancedTableToolbar from './EnhancedTableToolbar';
 import EnhancedTableHead from './EnhancedTableHead';
@@ -22,22 +22,24 @@ import { fetchPayload} from '../../services/dbServices';
 
 
 interface QueueContentProps {
+    queue: Queue | undefined;
     records: Record[];
-    onAddRecord: () => void;
+    onAddRecord: (payload: string) => void;
     onDeleteRecords: (ids: number[]) => void;
 } 
 
-export default function QueueContent({ records, onAddRecord, onDeleteRecords }: QueueContentProps) {
+export default function QueueContent({ queue, records, onAddRecord, onDeleteRecords }: QueueContentProps) {
   const classes = useStyles();
 
   const [alertDialogOpen, setAlertDialogOpen] = React.useState(false);
-  const [payloadDialogOpen, setPayloadDialogOpen] = React.useState(false);
   const [order, setOrder] = React.useState<Order>('desc');
   const [orderBy, setOrderBy] = React.useState<keyof Record>('timestamp');
   const [selected, setSelected] = React.useState<number[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [payload, setPayload] = React.useState<Payload>();
+  const [payload, setPayload] = React.useState<Payload>(); // for showing the payload in dialog
+  const [dialogOpen, setDialogOpen] = React.useState(false); // payload dialog
+  const [dialogEditMode, setDialogEditMode] = React.useState(false);
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Record) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -87,23 +89,31 @@ export default function QueueContent({ records, onAddRecord, onDeleteRecords }: 
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, records.length - page * rowsPerPage);
 
-  const handleDelete = () => setAlertDialogOpen(true); // show dialogbox
   const deleteRecords = () => onDeleteRecords(selected); // Action when pressed OK
+  const handleDelete = () => setAlertDialogOpen(true); // show dialogbox
+  
+  const handleAddRecord = () => {
+      setPayload({id: 0, queue: 0, record: 0, payload: ""});
+      setDialogEditMode(true);
+      setDialogOpen(true);
+  };
 
-  const showPayload = (recID : number) => {
-    fetchPayload(recID).then(pl => {
-      console.log(pl.payload);
-      setPayload(pl);
-      setPayloadDialogOpen(true);
-    });
-  }
+  const showPayload = (record : Record) => {
+    if (queue) {
+      fetchPayload(queue!, record).then(pl => {
+        setPayload(pl);
+        setDialogEditMode(false);
+        setDialogOpen(true);
+      });
+    }
+  };
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
           numSelected={selected.length}
-          onAddRecord={onAddRecord}
+          onAddRecord={handleAddRecord}
           onDelete={handleDelete}
         />
         <TableContainer>
@@ -152,7 +162,7 @@ export default function QueueContent({ records, onAddRecord, onDeleteRecords }: 
                         </TableCell>
                       <TableCell>
                         <Tooltip title="Payload">
-                          <IconButton size="small" aria-label="payload" onClick={() => { showPayload(record.id)}}>
+                          <IconButton size="small" aria-label="payload" onClick={() => { showPayload(record)}}>
                             <DescriptionOutlinedIcon />
                           </IconButton>
                         </Tooltip>
@@ -186,10 +196,12 @@ export default function QueueContent({ records, onAddRecord, onDeleteRecords }: 
         action={deleteRecords}
       />
        <PayloadDialog 
-        title="Payload" 
+        title={dialogEditMode ? "Submit New Payload" : "Show Payload"} 
         payload={payload?.payload}
-        open={payloadDialogOpen}
-        setOpen={setPayloadDialogOpen}
+        open={dialogOpen}
+        editMode={dialogEditMode}
+        setOpen={setDialogOpen}
+        action={onAddRecord}
       />     
     </div>
   );

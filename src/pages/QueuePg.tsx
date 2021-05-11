@@ -4,7 +4,7 @@ import { ClassNameMap } from '@material-ui/styles';
 import { Container } from '@material-ui/core';
 import Info from '../components/Info';
 import { Queue, Record } from '../common/types';
-import { fetchQueues, fetchRecords } from '../services/dbServices';
+import { fetchQueues, fetchRecords, postPayload } from '../services/dbServices';
 import SelectQueue from '../components/SelectQueue';
 import QueueContent from '../components/content/QueueContent';
 
@@ -29,8 +29,9 @@ function QueuePg() {
         }
     };
 
-    const handleAddRecord = () => {
-        console.log('post new record to queue', queue);
+    const handleAddRecord = (payload: string) => {
+        console.log('post new record to queue', queue, payload);
+        postPayload(queue!, payload);
     };
 
     const handleDeleteRecords = (ids: number[]) => {
@@ -47,7 +48,7 @@ function QueuePg() {
             </div>
             <div className={classes.container}>
                 <Container maxWidth="md">
-                    <QueueContent records={records} onAddRecord={handleAddRecord} onDeleteRecords={handleDeleteRecords} />
+                    <QueueContent queue={queue} records={records} onAddRecord={handleAddRecord} onDeleteRecords={handleDeleteRecords} />
                 </Container>
             </div>
         </main>

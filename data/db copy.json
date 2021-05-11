@@ -18,7 +18,7 @@
         },
         {
             "id": 5,
-            "name": "utgoingOrderQueue"
+            "name": "OutgoingOrderQueue"
         }
     ],
     "records": [
