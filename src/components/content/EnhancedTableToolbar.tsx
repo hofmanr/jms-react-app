@@ -33,13 +33,15 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  queueSelected: boolean;
+  onRefresh: () => void;
   onAddRecord: () => void;
   onDelete: () => void;
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { numSelected, onAddRecord, onDelete } = props;
+  const { numSelected, queueSelected, onRefresh, onAddRecord, onDelete } = props;
 
   return (
     <Toolbar variant="dense"
@@ -57,17 +59,17 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         </Typography>
       )}
         <Tooltip title="Refresh">
-          <IconButton aria-label="refresh" onClick={() => {console.log("refresh")}}>
+          <IconButton aria-label="refresh" disabled={!queueSelected} onClick={onRefresh}>
             <SyncIcon />
           </IconButton>
         </Tooltip>
         <Tooltip title="Add">
-          <IconButton aria-label="add" onClick={onAddRecord}>
+          <IconButton aria-label="add" disabled={!queueSelected} onClick={onAddRecord}>
             <PostAddIcon />
           </IconButton>
         </Tooltip>
         <Tooltip title="Delete">
-          <IconButton aria-label="delete" disabled={numSelected <= 0}  onClick={onDelete}>
+          <IconButton aria-label="delete" disabled={numSelected <= 0} onClick={onDelete}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>

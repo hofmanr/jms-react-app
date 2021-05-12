@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     container: {
       backgroundColor: theme.palette.background.paper,
-      padding: theme.spacing(3, 0, 2)
+      padding: theme.spacing(2, 0, 1)
     },
     button: {
       margin: theme.spacing(3),

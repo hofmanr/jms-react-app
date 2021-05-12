@@ -254,27 +254,15 @@
       "queue": "1",
       "messageID": "ID:123",
       "timestamp": "2021-04-11T23:09:34.047",
-      "id": 40
-    },
-    {
-      "queue": "1",
-      "messageID": "ID:123",
-      "timestamp": "2021-04-11T23:09:34.047",
       "id": 41
     }
   ],
   "payload": [
     {
-      "id": 1,
-      "queue": 1,
-      "record": 1,
-      "payload": "<bookstore>\n  <book category='COOKING'>\n    <title lang='en'>Everyday Italian</title>\n    <author>Giada De Laurentiis</author>\n    <year>2005</year>\n    <price>30.00</price>\n  </book>\n  <book category='CHILDREN'>\n    <title lang='en'>Harry Potter</title>\n    <author>J K. Rowling</author>\n    <year>2005</year>\n    <price>29.99</price>\n    </book>\n  <book category='WEB'>\n    <title lang='en'>Learning XML</title>\n    <author>Erik T. Ray</author>\n    <year>2003</year>\n    <price>39.95</price>\n    </book>\n</bookstore>"
-    },
-    {
+      "id": "1",
       "queue": "1",
-      "record": "40",
-      "payload": "payload",
-      "id": 2
+      "record": "1",
+      "payload": "<bookstore>\n  <book category='COOKING'>\n    <title lang='en'>Everyday Italian</title>\n    <author>Giada De Laurentiis</author>\n    <year>2005</year>\n    <price>30.00</price>\n  </book>\n  <book category='CHILDREN'>\n    <title lang='en'>Harry Potter</title>\n    <author>J K. Rowling</author>\n    <year>2005</year>\n    <price>29.99</price>\n    </book>\n  <book category='WEB'>\n    <title lang='en'>Learning XML</title>\n    <author>Erik T. Ray</author>\n    <year>2003</year>\n    <price>39.95</price>\n    </book>\n</bookstore>"
     },
     {
       "queue": "1",

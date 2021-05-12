@@ -10,11 +10,16 @@ import { Queue } from '../common/types';
 
 interface SelectQueueProps {
     queues: Queue[];
+    onRefresh: () => void;
     onSelectQueue: (queue: Queue) => void;
 }
 
-function SelectQueue({ queues, onSelectQueue }: SelectQueueProps) {
+function SelectQueue({ queues, onRefresh, onSelectQueue }: SelectQueueProps) {
     const classes = useStyles();
+
+    // Save params form previous call
+    const [prevQueues, setPrevQueues] = React.useState<Queue[]>();
+
     const [queue, setQueue] = React.useState<string>('');
 
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -25,7 +30,11 @@ function SelectQueue({ queues, onSelectQueue }: SelectQueueProps) {
         onSelectQueue(que!);
     };
 
-    console.log(queues);
+    if (prevQueues !== queues) {
+        console.log("setQueues", queues);
+        setPrevQueues(queues);
+        setQueue('');
+    }
 
     return (
         <div>
@@ -49,7 +58,7 @@ function SelectQueue({ queues, onSelectQueue }: SelectQueueProps) {
                     </FormControl>
                 </Grid>
                 <Grid item>
-                    <Button className={classes.button} style={{marginTop: '15px'}} variant="outlined">
+                    <Button className={classes.button} onClick={() => { onRefresh() }} style={{marginTop: '15px'}} variant="outlined">
                         Refresh
                     </Button>
                 </Grid>

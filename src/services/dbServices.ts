@@ -12,6 +12,22 @@ async function fetchRecords(queue: Queue) {
     .then((data: Record[]) => data);
 }
 
+async function deleteRecord(record: Record) {
+    return await fetch(`http://localhost:8000/records/${record.id}`,
+    {
+        method: "DELETE"
+    })
+    .then((res: Response) => null)
+    .catch(function(res){ console.log(res) })
+}
+
+async function removeRecord(queue: Queue, record: Record) {
+    return await fetchPayload(queue, record)
+    .then((payload:Payload) => deletePayload(payload))
+    .then(() => deleteRecord(record))
+    .then(() => "OK")
+}
+
 async function fetchPayload(queue: Queue, record: Record) {
     return await fetch(`http://localhost:8000/payload?queue=${queue.id}&record=${record.id >= 40 ? record.id : 1}`)
     .then((res: Response) => res.json())
@@ -19,7 +35,7 @@ async function fetchPayload(queue: Queue, record: Record) {
 }
 
 async function postPayload(queue: Queue, payload: string) {
-    fetch('http://localhost:8000/records?',
+    return await fetch('http://localhost:8000/records?',
     {
         headers: {
           'Accept': 'application/json',
@@ -29,15 +45,12 @@ async function postPayload(queue: Queue, payload: string) {
         body: JSON.stringify({queue: `${queue.id}`, messageID: 'ID:123', timestamp: "2021-04-11T23:09:34.047"})
     })
     .then((res: Response) => res.json())
-    .then((data: Record) => { 
-        console.log(data);
-        addPayload(queue, data, payload);
-    })
+    .then((data: Record) => addPayload(queue, data, payload))
     .catch(function(res){ console.log(res) })
 }
 
 async function addPayload(queue: Queue, record: Record, payload: string) {
-    fetch('http://localhost:8000/payload?',
+    return await fetch('http://localhost:8000/payload?',
     {
         headers: {
           'Accept': 'application/json',
@@ -48,9 +61,16 @@ async function addPayload(queue: Queue, record: Record, payload: string) {
     })
     .then((res: Response) => res.json())
     .then((data: Payload) => console.log(data))
-    // .then(function(res){ console.log(res) })
     .catch(function(res){ console.log(res) })
 }
 
+async function deletePayload(payload: Payload) {
+    return await fetch(`http://localhost:8000/payload/${payload.id}`,
+    {
+        method: "DELETE"
+    })
+    .then((res: Response) => null)
+    .catch(function(res){ console.log(res) })
+}
 
-export { fetchQueues, fetchRecords, fetchPayload, postPayload }
+export { fetchQueues, fetchRecords, removeRecord, fetchPayload, postPayload }
