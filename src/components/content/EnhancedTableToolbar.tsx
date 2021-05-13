@@ -8,6 +8,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import SyncIcon from '@material-ui/icons/Sync';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,6 +34,7 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  busy: boolean;
   queueSelected: boolean;
   onRefresh: () => void;
   onAddRecord: () => void;
@@ -41,7 +43,7 @@ interface EnhancedTableToolbarProps {
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { numSelected, queueSelected, onRefresh, onAddRecord, onDelete } = props;
+  const { numSelected, busy, queueSelected, onRefresh, onAddRecord, onDelete } = props;
 
   return (
     <Toolbar variant="dense"
@@ -55,7 +57,11 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         </Typography>
       ) : (
         <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-          &nbsp;
+          {busy ? (
+            <CircularProgress size={20} disableShrink />
+          ) : (
+            <div>&nbsp;</div>
+          )}
         </Typography>
       )}
         <Tooltip title="Refresh">

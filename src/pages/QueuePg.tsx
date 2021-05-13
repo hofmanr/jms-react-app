@@ -14,17 +14,45 @@ function QueuePg() {
     const [queues, setQueues] = React.useState<Queue[]>([]);
     const [queue, setQueue] = React.useState<Queue>(); // current selected queue
     const [records, setRecords] = React.useState<Record[]>([]); // records in the selected queue
+    const [busySelect, setBusySelect] = React.useState(false);
+    const [busyContent, setBusyContent] = React.useState(false);
+
+    const timerBusySelect = () => {
+        setTimeout(() => setBusySelect(false), 500);
+    };
+
+    const timerBusyContent = () => {
+        setTimeout(() => setBusyContent(false), 500);
+    };
 
     // run when first load the component in the browser
     useEffect(() => {
-        console.log('Fetch queues');
-        fetchQueues().then(qs => setQueues(qs));
+        setBusySelect(true);
+        fetchQueues().then(qs => {
+            setQueues(qs);
+            timerBusySelect();
+        });
     }, []); // run it once
+
+    const handleRefreshQueues = () => {
+        setBusySelect(true);
+        fetchQueues().then(qs => {
+            // Reset state
+            setQueues(qs);
+            setQueue(undefined);
+            setRecords([]);
+            timerBusySelect();
+        });
+    };
 
     const onSelectQueue = (seletedQueue: Queue) => {
         setQueue(seletedQueue);
         if (seletedQueue) {
-            fetchRecords(seletedQueue).then(rs => setRecords(rs));
+            setBusyContent(true);
+            fetchRecords(seletedQueue).then(rs => {
+                setRecords(rs);
+                timerBusyContent();
+            });
         } else {
             setRecords([]);
         }
@@ -52,6 +80,7 @@ function QueuePg() {
     };
 
     const handleDeleteRecords = (ids: number[]) => {
+        setBusyContent(true);
         let recordsToDelete: (Record | undefined)[] = ids.map((id: number) => records.find((value: Record) => value.id === id));
         let promiss = executeDelete(recordsToDelete);
         // Refresh the content in the QueueContent component
@@ -60,20 +89,14 @@ function QueuePg() {
 
     const handleRefreshContent = () => {
         if (queue) {
-            fetchRecords(queue).then(rs => setRecords(rs));
+            setBusyContent(true);
+            fetchRecords(queue).then(rs => {
+                setRecords(rs);
+                timerBusyContent();
+            });
         } else {
             setRecords([]);
         }
-    };
-
-    const handleRefreshQueues = () => {
-        console.log('Refresh queues');
-        fetchQueues().then(qs => {
-            // Reset state
-            setQueues(qs);
-            setQueue(undefined);
-            setRecords([]);
-        });
     };
 
     return (
@@ -81,12 +104,12 @@ function QueuePg() {
             <div className={classes.container}>
                 <Container maxWidth="sm">
                     <Info title="Queue Details" message="Show, add and delete messages from queues." />
-                    <SelectQueue queues={queues} onRefresh={handleRefreshQueues} onSelectQueue={onSelectQueue} />
+                    <SelectQueue busy={busySelect} queues={queues} onRefresh={handleRefreshQueues} onSelectQueue={onSelectQueue} />
                 </Container>
             </div>
             <div className={classes.container}>
                 <Container maxWidth="md">
-                    <QueueContent queue={queue} records={records} onRefresh={handleRefreshContent} onAddRecord={handleAddRecord} onDeleteRecords={handleDeleteRecords} />
+                    <QueueContent busy={busyContent} queue={queue} records={records} onRefresh={handleRefreshContent} onAddRecord={handleAddRecord} onDeleteRecords={handleDeleteRecords} />
                 </Container>
             </div>
         </main>

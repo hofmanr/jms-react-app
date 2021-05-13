@@ -7,14 +7,16 @@ import Select from '@material-ui/core/Select';
 import React from 'react';
 import useStyles from '../Styles';
 import { Queue } from '../common/types';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 interface SelectQueueProps {
+    busy: boolean;
     queues: Queue[];
     onRefresh: () => void;
     onSelectQueue: (queue: Queue) => void;
 }
 
-function SelectQueue({ queues, onRefresh, onSelectQueue }: SelectQueueProps) {
+function SelectQueue({ busy, queues, onRefresh, onSelectQueue }: SelectQueueProps) {
     const classes = useStyles();
 
     // Save params form previous call
@@ -58,9 +60,18 @@ function SelectQueue({ queues, onRefresh, onSelectQueue }: SelectQueueProps) {
                     </FormControl>
                 </Grid>
                 <Grid item>
-                    <Button className={classes.button} onClick={() => { onRefresh() }} style={{marginTop: '15px'}} variant="outlined">
-                        Refresh
-                    </Button>
+                    <div className={classes.wrapper} style={{marginTop: '10px'}}>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            className={classes.button}
+                            disabled={busy}
+                            onClick={() => { onRefresh() }}
+                        >
+                            Refresh
+                        </Button>
+                        {busy && <CircularProgress size={24} className={classes.buttonProgress} />}
+                    </div>
                 </Grid>
             </Grid>
         </div>

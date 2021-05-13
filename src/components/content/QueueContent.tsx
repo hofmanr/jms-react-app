@@ -22,6 +22,7 @@ import { fetchPayload} from '../../services/dbServices';
 
 
 interface QueueContentProps {
+    busy: boolean;
     queue: Queue | undefined;
     records: Record[];
     onRefresh: () => void;
@@ -29,22 +30,22 @@ interface QueueContentProps {
     onDeleteRecords: (ids: number[]) => void;
 } 
 
-export default function QueueContent({ queue, records, onRefresh, onAddRecord, onDeleteRecords }: QueueContentProps) {
+export default function QueueContent({ busy, queue, records, onRefresh, onAddRecord, onDeleteRecords }: QueueContentProps) {
   const classes = useStyles();
 
   // Store the parameters from the previous call
   const [prevQueue, setPrevQueue] = React.useState<Queue>();
   const [prevRecords, setPrevRecords] = React.useState<Record[]>();
 
-  const [alertDialogOpen, setAlertDialogOpen] = React.useState(false);
   const [order, setOrder] = React.useState<Order>('desc');
   const [orderBy, setOrderBy] = React.useState<keyof Record>('timestamp');
   const [selected, setSelected] = React.useState<number[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [payload, setPayload] = React.useState<Payload>(); // for showing the payload in dialog
-  const [dialogOpen, setDialogOpen] = React.useState(false); // payload dialog
+  const [alertDialogOpen, setAlertDialogOpen] = React.useState(false);
   const [dialogEditMode, setDialogEditMode] = React.useState(false);
+  const [dialogOpen, setDialogOpen] = React.useState(false); // payload dialog
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Record) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -124,7 +125,7 @@ export default function QueueContent({ queue, records, onRefresh, onAddRecord, o
     setPage(0);
   };
 
-  // The main code is executed each time the user clicks on a button or select a record
+  // The main code is executed each time the user clicks on a button, select a record, etc.
   // We want to init the state when a different queue is selected or the content (records) is changed
   if (prevQueue !== queue || prevRecords !== records) {
     initState();
@@ -135,6 +136,7 @@ export default function QueueContent({ queue, records, onRefresh, onAddRecord, o
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
           numSelected={selected.length}
+          busy={busy}
           queueSelected={queue ? true : false}
           onRefresh={handleRefresh}
           onAddRecord={handleAddRecord}
