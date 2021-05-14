@@ -8,11 +8,11 @@ interface InfoProps {
 
 function Info({ title, message }: InfoProps) {
     return (
-        <div>
-            <Typography variant="h3" align="center" color="textPrimary" gutterBottom>
+        <div style={{marginTop: '10px'}}>
+            <Typography variant="h4" align="center" color="textPrimary" gutterBottom>
                 {title}
             </Typography>
-            <Typography variant="h5" align="center" color="textSecondary" paragraph>
+            <Typography variant="h6" align="center" color="textSecondary" paragraph>
                 {message}
             </Typography>
         </div>

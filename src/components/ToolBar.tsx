@@ -6,20 +6,20 @@ import QueueIcon from '@material-ui/icons/Queue';
 import useStyles from '../Styles';
 import { ClassNameMap } from '@material-ui/styles';
 
-const MenuBar = () => {
+const ToolBar = () => {
     const classes: ClassNameMap = useStyles();
     return (
-        <div className={classes.root}>
-            <AppBar position="static">
+        <div className={classes.toolBar}>
+            <AppBar elevation={0} position="static">
                 <Toolbar>
-                    <QueueIcon className={classes.menuIcon} />
-                    <Typography variant="h6" className={classes.menuTitle}>
+                    <QueueIcon className={classes.toolbarIcon} />
+                    <Typography variant="h6" className={classes.toolbarTitle}>
                         JMS Client App
-          </Typography>
+                    </Typography>
                 </Toolbar>
             </AppBar>
         </div>
     )
 };
 
-export default MenuBar;
+export default ToolBar;

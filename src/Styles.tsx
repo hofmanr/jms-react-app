@@ -1,19 +1,39 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
+const drawerWidth = 160;
+
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
+      display: 'flex',
       flexGrow: 1,
       width: '100%',
     },
-    menuIcon: {
+    page: {
+      background: '#f9f9f9',
+      width: '100%'
+    },
+    drawer: {
+      width: drawerWidth
+    },
+    drawerPaper: {
+      width: drawerWidth
+    },
+    drawerItemActive: {
+      background: '#f4f4f4'
+    },
+    toolBar: {
+      width: `calc(100% -${drawerWidth}px)`,
+      marginLeft: drawerWidth,
+    },
+    toolbarIcon: {
       marginRight: theme.spacing(2),
     },
-    menuTitle: {
+    toolbarTitle: {
       flexGrow: 1,
     },
     container: {
       backgroundColor: theme.palette.background.paper,
-      padding: theme.spacing(2, 0, 1)
+      padding: theme.spacing(1, 0, 1)
     },
     wrapper: {
       margin: theme.spacing(1),
