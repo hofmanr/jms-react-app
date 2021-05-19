@@ -64,21 +64,21 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           )}
         </Typography>
       )}
+      <IconButton aria-label="refresh" disabled={!queueSelected} onClick={onRefresh}>
         <Tooltip title="Refresh">
-          <IconButton aria-label="refresh" disabled={!queueSelected} onClick={onRefresh}>
-            <SyncIcon />
-          </IconButton>
+          <SyncIcon />
         </Tooltip>
+      </IconButton>
+      <IconButton aria-label="add" disabled={!queueSelected} onClick={onAddRecord}>
         <Tooltip title="Add">
-          <IconButton aria-label="add" disabled={!queueSelected} onClick={onAddRecord}>
-            <PostAddIcon />
-          </IconButton>
+          <PostAddIcon />
         </Tooltip>
+      </IconButton>
+      <IconButton aria-label="delete" disabled={numSelected <= 0} onClick={onDelete}>
         <Tooltip title="Delete">
-          <IconButton aria-label="delete" disabled={numSelected <= 0} onClick={onDelete}>
-            <DeleteIcon />
-          </IconButton>
+          <DeleteIcon />
         </Tooltip>
+      </IconButton>
      </Toolbar>
   );
 };
